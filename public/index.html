@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Provisionier</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.8.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.8.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.8.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.8.1/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    <script src="/js/lib/jquery.min.js"></script>
+
+    <style media="screen">
+      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+      .card { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+      .card h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      .card h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      .card p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+      .card a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      .card, .card a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+      @media (max-width: 600px) {
+        body, .card { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="cardDefault">
+    	<h2>Welcome</h2>
+	<h1>Hands free iOS provisioning</h1>
+    </div>
+    <div class="card" style="display:none;" id="cardUnauthenticatedDefault">
+    	<h2>Welcome</h2>
+	<h1>Hands free iOS provisioning</h1>
+	<p>This app is not for public use, approval from a member of the team is required</p>
+	<p>To setup Provisionier for your own use visit our <a href="GITHUB_LINK_TO_PROVISIONIER_HERE">visit our github</a></p>
+	<a target="_blank" href="/signin">Sign in</a>
+    </div>
+
+    <p id="load">Firebase SDK Loading&hellip;</p>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+	firebase.auth().onAuthStateChanged(user => {
+		console.log(user);
+		$('.card').hide();
+		if (user) {
+			console.log("User is authenticated");
+			$('#cardAuthenticatedDefault').show();
+		} else {
+			console.log("User is unauthenticated");
+			$('#cardUnauthenticatedDefault').show();
+		};
+	});
+
+        try {
+          let app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+        } catch (e) {
+          console.error(e);
+          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script>
+  </body>
+</html>

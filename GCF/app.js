@@ -6,7 +6,7 @@ var admin = require('firebase-admin');
 admin.initializeApp();
 var db = admin.firestore();
 
-module.exports = (app) => {
+module.exports = (app, { getRouter }) => {
   app.log("Yay! The app was loaded!");
 
   const router = getRouter("/app");

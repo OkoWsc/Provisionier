@@ -1,8 +1,8 @@
 {
-  "name": "probotgcf",
+  "name": "provisionier",
   "version": "1.0.0",
   "private": true,
-  "description": "Probot GCF function",
+  "description": "I help release mobile apps!",
   "scripts": {
     "start": "probot run ./app.js",
     "test": "node test.js"

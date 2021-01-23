@@ -18,22 +18,12 @@ jobs:
           service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
           export_default_credentials: true
 
-      - name: Deploy to GCF (Derrick)
+      - name: Build Provisionier
         run: |
-          gcloud functions deploy probotDerrick \
-            --runtime nodejs12 \
-            --allow-unauthenticated \
-            --trigger-http \
-            --source GCF \
-            --entry-point probotDerrick \
-            --set-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}"
+        cd GoogleCloudRun && gcloud builds submit --tag gcr.io/provisionier/probot
 
-      - name: Deploy to GCF
-        run: |
-          gcloud functions deploy probot \
-            --runtime nodejs12 \
-            --allow-unauthenticated \
-            --trigger-http \
-            --source GCF \
-            --entry-point probot \
-            --set-env-vars APP_ID="${{secrets.APP_ID}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET}}"
+      - name: Deploy Provisionier Probot
+        run: gcloud run deploy probot --image gcr.io/provisionier/probot --platform managed
+
+      - name: Deploy Derrick Probot
+        run: gcloud run deploy derrick --image gcr.io/provisionier/probot --platform managed --update-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}"

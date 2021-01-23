@@ -13,7 +13,7 @@ module.exports = (app) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
-    const permissions =await myOctokit.repos.getCollaboratorPermissionLevel({
+    const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
       owner: context.payload.repository.owner.username,
       repo: context.payload.repository.name,
       username: context.payload.sender.login

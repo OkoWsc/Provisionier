@@ -1,0 +1,24 @@
+{
+  "name": "probotgcf",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Probot GCF function",
+  "scripts": {
+    "start": "probot run ./app.js",
+    "test": "node test.js"
+  },
+  "author": "Gregory Oakley-Stevenson <gregory@okonetwork.org.uk>",
+  "dependencies": {
+    "probot": "^11.0.5"
+  },
+  "devDependencies": {
+    "nock": "^13.0.6",
+    "smee-client": "^1.2.2",
+    "uvu": "^0.5.1"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  }
+}

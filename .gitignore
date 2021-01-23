@@ -1,4 +1,4 @@
-ProvisionierCode
-AuthKey.p8
+*.log
 node_modules
-.firebase
+.env
+hosting.*.cache

@@ -6,13 +6,8 @@ var admin = require('firebase-admin');
 admin.initializeApp();
 var db = admin.firestore();
 
-module.exports = (app, { getRouter }) => {
+module.exports = (app) => {
   app.log("Yay! The app was loaded!");
-
-  const router = getRouter("/app");
-  router.get("/ping", (req, res) => {
-    res.send("pong");
-  });
 
   app.on("issues.opened", async (context) => {
     console.log("New issue opened");

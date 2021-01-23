@@ -8,13 +8,13 @@ module.exports = (app) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
-    permissions = octokit.repos.getCollaboratorPermissionLevel({
+    permissions = context.octokit.repos.getCollaboratorPermissionLevel({
       owner: context.payload.repository.owner.login,
       repository: context.payload.repository.full_name,
       username: context.payload.issue.user.login
     });
     console.log(permissions);
-    
+
     releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
     })

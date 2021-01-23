@@ -1,21 +1,21 @@
 /**
  * @param {import('probot').Probot} app
  */
-module.exports = (app) => {
+module.exports = async (app) => {
   app.log("Yay! The app was loaded!");
 
   app.on("issues.opened", async (context) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
-    permissions = context.octokit.repos.getCollaboratorPermissionLevel({
+    const permissions = await context.octokit.repos.getCollaboratorPermissionLevel({
       owner: context.payload.repository.owner.login,
       repository: context.payload.repository.full_name,
       username: context.payload.issue.user.login
     });
     console.log(permissions);
 
-    releaseLabel = context.payload.issue.labels.filter(function(label) {
+    const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
     })
     if (releaseLabel) {

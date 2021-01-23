@@ -13,13 +13,6 @@ module.exports = (app) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
-    const permissions = await context.octokit.repos.getCollaboratorPermissionLevel({
-      owner: context.payload.repository.owner.login,
-      repository: context.payload.repository.full_name,
-      username: context.payload.issue.user.login
-    });
-    console.log(`Got permissions: ${permissions}`)
-
     const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
     })
@@ -33,7 +26,6 @@ module.exports = (app) => {
           
           To set the version for this release reply saying /setVersion n.n.n
           where n.n.n is the version number for this release.
-          ${JSON.stringify(permissions)}
         ` })
       );
     } else {

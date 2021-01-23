@@ -4,7 +4,7 @@
 
 var admin = require('firebase-admin');
 admin.initializeApp();
-var db = admin.database();
+var db = admin.firestore();
 
 module.exports = (app) => {
   app.log("Yay! The app was loaded!");

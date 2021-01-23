@@ -19,10 +19,20 @@ jobs:
           export_default_credentials: true
       - name: Deploy to GCF
         run: |
-          gcloud functions deploy GCFProbot \
+          gcloud functions deploy probot \
             --runtime nodejs12 \
             --allow-unauthenticated \
             --trigger-http \
             --source GCF \
             --entry-point probotApp \
             --set-env-vars APP_ID="${{secrets.APP_ID}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET}}"
+
+      - name: Deploy to GCF (Derrick)
+        run: |
+          gcloud functions deploy probotDerrick \
+            --runtime nodejs12 \
+            --allow-unauthenticated \
+            --trigger-http \
+            --source GCF \
+            --entry-point probotApp \
+            --set-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}"

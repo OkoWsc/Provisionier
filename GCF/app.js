@@ -7,7 +7,7 @@ admin.initializeApp();
 var db = admin.firestore();
 
 module.exports = (app) => {
-  app.log("Yay! The app was loaded!");
+  console.log("Yay! The app was loaded!");
 
   app.on("issues.opened", async (context) => {
     console.log("New issue opened");

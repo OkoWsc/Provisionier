@@ -26,7 +26,7 @@ jobs:
             --trigger-http \
             --source GCF \
             --entry-point probotDerrick \
-            --set-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}",WEBHOOK_PATH="/probotDerrick/"
+            --set-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}"
 
       - name: Deploy to GCF
         run: |
@@ -36,4 +36,4 @@ jobs:
             --trigger-http \
             --source GCF \
             --entry-point probot \
-            --set-env-vars APP_ID="${{secrets.APP_ID}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET}}",WEBHOOK_PATH="/probot/"
+            --set-env-vars APP_ID="${{secrets.APP_ID}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET}}"

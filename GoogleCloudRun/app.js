@@ -19,7 +19,7 @@ module.exports = (app) => {
       username: context.payload.sender.login
     })
     return context.octokit.issues.createComment(
-      context.issue(data)
+      context.issue({body:data})
     );
 
     const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({

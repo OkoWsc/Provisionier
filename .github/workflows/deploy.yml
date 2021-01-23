@@ -24,8 +24,8 @@ jobs:
 
       - name: Deploy Provisionier Probot
         run: |
-          gcloud run deploy probot --image gcr.io/provisionier/probot --platform managed
+          gcloud run deploy probot --image gcr.io/provisionier/probot --platform managed --region us-west1
 
       - name: Deploy Derrick Probot
         run: |
-          gcloud run deploy derrick --image gcr.io/provisionier/probot --platform managed --update-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}"
+          gcloud run deploy derrick --image gcr.io/provisionier/probot --platform managed --update-env-vars APP_ID="${{secrets.APP_ID_DERRICK}}",PRIVATE_KEY="${{secrets.PRIVATE_KEY_DERRICK}}",WEBHOOK_SECRET="${{secrets.WEBHOOK_SECRET_DERRICK}}" --region us-west1

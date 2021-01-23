@@ -13,6 +13,15 @@ module.exports = (app) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
+    data=JSON.stringify({
+      owner: context.payload.repository.owner.username,
+      repo: context.payload.repository.name,
+      username: context.payload.sender.login
+    })
+    return context.octokit.issues.createComment(
+      context.issue(data)
+    );
+
     const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
       owner: context.payload.repository.owner.username,
       repo: context.payload.repository.name,

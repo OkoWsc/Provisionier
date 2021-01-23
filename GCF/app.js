@@ -1,7 +1,12 @@
 /**
  * @param {import('probot').Probot} app
  */
-module.exports = async (app) => {
+
+var admin = require('firebase-admin');
+admin.initializeApp();
+var db = admin.database();
+
+module.exports = (app) => {
   app.log("Yay! The app was loaded!");
 
   app.on("issues.opened", async (context) => {
@@ -13,7 +18,7 @@ module.exports = async (app) => {
       repository: context.payload.repository.full_name,
       username: context.payload.issue.user.login
     });
-    console.log(permissions);
+    console.log(`Got permissions: ${permissions}`)
 
     const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";

@@ -9,6 +9,7 @@
   },
   "author": "Gregory Oakley-Stevenson <gregory@okonetwork.org.uk>",
   "dependencies": {
+    "firebase-admin": "^9.4.2",
     "probot": "^11.0.5"
   },
   "devDependencies": {

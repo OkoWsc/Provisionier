@@ -13,6 +13,13 @@ module.exports = (app) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
+    const permissions =await myOctokit.repos.getCollaboratorPermissionLevel({
+      owner: context.payload.repository.owner.username,
+      repo: context.payload.repository.name,
+      username: context.payload.sender.login;
+    })
+    console.log(`User has role:${permissions.data.permission}`)
+
     const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
     })

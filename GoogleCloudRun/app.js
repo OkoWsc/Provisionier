@@ -16,7 +16,7 @@ module.exports = (app) => {
     const permissions =await myOctokit.repos.getCollaboratorPermissionLevel({
       owner: context.payload.repository.owner.username,
       repo: context.payload.repository.name,
-      username: context.payload.sender.login;
+      username: context.payload.sender.login
     })
     console.log(`User has role:${permissions.data.permission}`)
 

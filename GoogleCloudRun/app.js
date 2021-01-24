@@ -19,7 +19,8 @@ module.exports = (app) => {
       repo: context.payload.repository.name,
       username: context.payload.sender.login
     })
-    console.log(`User has role:${permissions.data.permissions}`)
+    const permission = permissions.data.permission;
+    console.log(`User has role:${permission}`)
 
     const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
@@ -34,7 +35,7 @@ module.exports = (app) => {
           
           To set the version for this release reply saying /setVersion n.n.n
           where n.n.n is the version number for this release.
-          ${JSON.stringify(permissions)}
+          ${permission}
         ` })
       );
     } else {

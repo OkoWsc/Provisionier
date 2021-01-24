@@ -22,15 +22,15 @@ module.exports = (app) => {
     const permission = permissions.data.permission;
     console.log(`User has role:${permission}`)
     switch (permission) {
-      case "adminAAA":
-      case "writeAAA":
+      case "admin":
+      case "write":
         break;
       default:
         await context.octokit.issues.createComment(
           context.issue({ body: `I don't recognise you`})
         );
 
-        context.octokit.issues.update(
+        return context.octokit.issues.update(
           context.issue({state:"closed"})
         )
     }
@@ -41,15 +41,12 @@ module.exports = (app) => {
     if (releaseLabel) {
       console.log("Issue is release issue");
       return context.octokit.issues.createComment(
-        context.issue({ body: `
-          Hi @${context.payload.issue.user.login}
-          Latest android version: x.x.x
-          Latest iOS version: x.x.x
+        context.issue({ body: `Hi @${context.payload.issue.user.login}
+          Currently deployed Android: x.x.x
+          Currently deployed iOS: x.x.x
           
           To set the version for this release reply saying /setVersion n.n.n
-          where n.n.n is the version number for this release.
-          ${permission}
-        ` })
+          where n.n.n is the version number for this release.`})
       );
     } else {
       console.log("Issue is not release issue, ignoring")

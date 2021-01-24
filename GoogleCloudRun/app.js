@@ -53,7 +53,7 @@ module.exports = (app) => {
           context.issue({state:"closed"})
         )
       }
-      appReleaseInfo = appReleaseInfoDocs.docs[0].data;
+      appReleaseInfo = appReleaseInfoDocs.docs[0].data();
       appReleaseInfo.id = appReleaseInfoDocs.docs[0].id;
 
       return context.octokit.issues.createComment(

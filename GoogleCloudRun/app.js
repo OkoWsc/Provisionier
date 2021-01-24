@@ -53,8 +53,8 @@ module.exports = (app) => {
           context.issue({state:"closed"})
         )
       }
-      appReleaseInfo = appReleaseInfo.docs[0].data;
-      appReleaseInfo.id = appReleaseInfo.docs[0].id;
+      appReleaseInfo = appReleaseInfoDocs.docs[0].data;
+      appReleaseInfo.id = appReleaseInfoDocs.docs[0].id;
 
       return context.octokit.issues.createComment(
         context.issue({ body: `Hi @${context.payload.issue.user.login}

@@ -47,6 +47,9 @@ module.exports = (app) => {
       );
     } else {
       console.log("Not a release issue");
+      context.octokit.issues.createComment(
+        context.issue({ body: `NOTREL:${JSON.stringify(context.payload)}` })
+      );
     }
 });
 

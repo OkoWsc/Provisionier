@@ -14,7 +14,7 @@ module.exports = (app) => {
     console.log(JSON.stringify(context.payload));
 
     data=JSON.stringify({
-      owner: context.payload.repository.owner.username,
+      owner: context.payload.repository.owner.login,
       repo: context.payload.repository.name,
       username: context.payload.sender.login
     })
@@ -23,7 +23,7 @@ module.exports = (app) => {
     );
 
     const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
-      owner: context.payload.repository.owner.username,
+      owner: context.payload.repository.owner.login,
       repo: context.payload.repository.name,
       username: context.payload.sender.login
     })

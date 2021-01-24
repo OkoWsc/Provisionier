@@ -7,7 +7,7 @@ admin.initializeApp();
 var db = admin.firestore();
 const semver = require('semver');
 
-const permissionCheck = await function(context) {
+const permissionCheck = async function(context) {
   const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
     owner: context.payload.repository.owner.login,
     repo: context.payload.repository.name,

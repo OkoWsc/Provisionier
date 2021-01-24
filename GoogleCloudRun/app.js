@@ -7,7 +7,7 @@ admin.initializeApp();
 var db = admin.firestore();
 const semver = require('semver');
 
-const permissionCheck = function(context) {
+const permissionCheck = await function(context) {
   const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
     owner: context.payload.repository.owner.login,
     repo: context.payload.repository.name,
@@ -32,7 +32,7 @@ module.exports = (app) => {
     console.log("New comment received");
     console.log(JSON.stringify(context.payload));
 
-    if (!permissionCheck(context)) {
+    if (!await permissionCheck(context)) {
       return console.log("Commenting user not got permission");
     }
 
@@ -59,7 +59,7 @@ module.exports = (app) => {
     if (releaseLabel) {
       console.log("Issue is release issue");
   
-      if (!permissionCheck(context)) {
+      if (!await permissionCheck(context)) {
         await context.octokit.issues.createComment(
           context.issue({ body: `I don't recognise you`})
         );

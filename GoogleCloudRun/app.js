@@ -21,6 +21,19 @@ module.exports = (app) => {
     })
     const permission = permissions.data.permission;
     console.log(`User has role:${permission}`)
+    switch (permission) {
+      case "adminAAA":
+      case "writeAAA":
+        break;
+      default:
+        await context.octokit.issues.createComment(
+          context.issue({ body: `I don't recognise you`})
+        );
+
+        context.octokit.issues.update(
+          context.issue({state:"closed"})
+        )
+    }
 
     const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";

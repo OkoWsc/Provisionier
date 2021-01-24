@@ -13,21 +13,13 @@ module.exports = (app) => {
     console.log("New issue opened");
     console.log(JSON.stringify(context.payload));
 
-    data=JSON.stringify({
-      owner: context.payload.repository.owner.login,
-      repo: context.payload.repository.name,
-      username: context.payload.sender.login
-    })
-    return context.octokit.issues.createComment(
-      context.issue({body:data})
-    );
 
     const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
       owner: context.payload.repository.owner.login,
       repo: context.payload.repository.name,
       username: context.payload.sender.login
     })
-    console.log(`User has role:${permissions.data.permission}`)
+    console.log(`User has role:${permissions.data.permissions}`)
 
     const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
@@ -42,6 +34,7 @@ module.exports = (app) => {
           
           To set the version for this release reply saying /setVersion n.n.n
           where n.n.n is the version number for this release.
+          ${JSON.stringify(permissions)}
         ` })
       );
     } else {

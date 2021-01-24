@@ -45,7 +45,9 @@ module.exports = (app) => {
       context.octokit.issues.createComment(
         context.issue({ body: JSON.stringify(context.payload) })
       );
-    };
+    } else {
+      console.log("Not a release issue");
+    }
 });
 
   app.on("issues.opened", async (context) => {

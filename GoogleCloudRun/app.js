@@ -7,8 +7,46 @@ admin.initializeApp();
 var db = admin.firestore();
 const semver = require('semver');
 
+const permissionCheck = function(context) {
+  const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
+    owner: context.payload.repository.owner.login,
+    repo: context.payload.repository.name,
+    username: context.payload.sender.login
+  })
+
+  const permission = permissions.data.permission;
+  console.log(`User has role: ${permission}`)
+  switch (permission) {
+    case "admin":
+    case "write":
+      return true;
+      break;
+    default:
+      return false;
+  }
+}
 module.exports = (app) => {
   console.log("Yay! The app was loaded!");
+
+  app.on("issue_comment.created", async (context) => {
+    console.log("New comment received");
+    console.log(JSON.stringify(context.payload));
+
+    if (!permissionCheck(context)) {
+      return console.log("Commenting user not got permission");
+    }
+
+    const releaseLabel = context.payload.issue.labels.filter(function(label) {
+      return label.name == "release";
+    })
+    if (!releaseLabel) {
+      console.log("The issue this comment is on is a release issue");
+      // @todo add wit.ai here
+      context.octokit.issues.createComment(
+        context.issue({ body: JSON.stringify(context.payload) })
+      );
+    };
+});
 
   app.on("issues.opened", async (context) => {
     console.log("New issue opened");
@@ -20,27 +58,17 @@ module.exports = (app) => {
     })
     if (releaseLabel) {
       console.log("Issue is release issue");
-      const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
-        owner: context.payload.repository.owner.login,
-        repo: context.payload.repository.name,
-        username: context.payload.sender.login
-      })
-      const permission = permissions.data.permission;
-      console.log(`User has role: ${permission}`)
-      switch (permission) {
-        case "admin":
-        case "write":
-          break;
-        default:
-          await context.octokit.issues.createComment(
-            context.issue({ body: `I don't recognise you`})
-          );
   
-          return context.octokit.issues.update(
-            context.issue({state:"closed"})
-          )
+      if (!permissionCheck(context)) {
+        await context.octokit.issues.createComment(
+          context.issue({ body: `I don't recognise you`})
+        );
+  
+        return context.octokit.issues.update(
+          context.issue({state:"closed"})
+        )  
       }
-  
+
       const appReleaseInfoDocs = await db.collection("apps")
         .where("owner","==",context.payload.repository.owner.login)
         .where("repo","==",context.payload.repository.name)

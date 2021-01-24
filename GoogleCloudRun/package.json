@@ -11,7 +11,8 @@
   "dependencies": {
     "@octokit/rest": "^18.0.14",
     "firebase-admin": "^9.4.2",
-    "probot": "^11.0.5"
+    "probot": "^11.0.5",
+    "semver": "^7.3.4"
   },
   "devDependencies": {
     "nock": "^13.0.6",

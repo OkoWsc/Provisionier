@@ -5,6 +5,7 @@
 var admin = require('firebase-admin');
 admin.initializeApp();
 var db = admin.firestore();
+const semver = require('semver');
 
 module.exports = (app) => {
   console.log("Yay! The app was loaded!");
@@ -55,14 +56,26 @@ module.exports = (app) => {
       }
       appReleaseInfo = appReleaseInfoDocs.docs[0].data();
       appReleaseInfo.id = appReleaseInfoDocs.docs[0].id;
+      androidVersion=appReleaseInfo.androidVersion;
+      iosVersion=appReleaseInfo.iosVersion;
+
+      latestVersion=androidVersion;
+      if (semver.gt(iosVersion,androidVersion)) {
+          version=iosVersion;
+      }
+      nextMajorVersion = semver.inc(version,"major");
+      nextMinorVersion = semver.inc(version,"minor");
+      nextPatchVersion = semver.inc(version,"patch");
 
       return context.octokit.issues.createComment(
         context.issue({ body: `Hi @${context.payload.issue.user.login}
-          Currently deployed Android: ${appReleaseInfo.androidVersion}
-          Currently deployed iOS: ${appReleaseInfo.iosVersion}
-          
-          To set the version for this release reply saying /setVersion n.n.n
-          where n.n.n is the version number for this release.`})
+          Currently deployed Android: ${androidVersion}
+          Currently deployed iOS: ${iosVersion}
+          Next major: ${nextMajorVersion}
+          Next minor: ${nextMinorVersion}
+          Next patch: ${nextPatchVersion}
+          To set the version for this release reply saying /setVersion major, minor or patch
+          (eg /setVersion minor)`})
       );
     } else {
       console.log("Issue is not release issue, ignoring")

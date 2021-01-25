@@ -7,6 +7,9 @@ admin.initializeApp();
 var db = admin.firestore();
 const semver = require('semver');
 
+const witAiClient = new Wit({accessToken: process.env.witAiToken});
+
+
 const permissionCheck = async function(context) {
   const permissions =await context.octokit.repos.getCollaboratorPermissionLevel({
     owner: context.payload.repository.owner.login,
@@ -41,15 +44,22 @@ module.exports = (app) => {
     })
     if (releaseLabel) {
       console.log("This comment is on a release issue");
-      // @todo add wit.ai here
-      context.octokit.issues.createComment(
-        context.issue({ body: JSON.stringify(context.payload) })
-      );
+      try {
+        witResponse = await witAiClient.message(context.payload.comment.body, {})
+        console.log('Yay, got Wit.ai response: ' + JSON.stringify(witResponse));
+        context.octokit.issues.createComment(
+          context.issue({ body: `${witResponse}` })
+        );
+        //@todo actually handle the wit.ai response properly
+      } catch (witError) {
+        context.octokit.issues.createComment(
+          context.issue({ body: `Whoops, im not feeling too well and cannot response.
+            Please ask my maintainer to check the logs.` })
+        );
+        throw new Error(witError);
+      }
     } else {
-      console.log("Not a release issue");
-      context.octokit.issues.createComment(
-        context.issue({ body: `NOTREL:${JSON.stringify(context.payload)}` })
-      );
+      console.log("Not a release issue, nothing for me to do!");
     }
 });
 

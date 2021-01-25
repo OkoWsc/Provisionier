@@ -48,10 +48,31 @@ module.exports = (app) => {
       try {
         witResponse = await witAiClient.message(context.payload.comment.body, {})
         console.log('Yay, got Wit.ai response: ' + JSON.stringify(witResponse));
-        context.octokit.issues.createComment(
-          context.issue({ body: `${JSON.stringify(witResponse)}` })
-        );
-        //@todo actually handle the wit.ai response properly
+
+
+        witResponse.intents.sort(function(a, b) {
+          if (a.confidence < b.confidence) return 1;
+          if (a.confidence > b.confidence) return -1;
+          return 0;
+        });
+        const highestIntent = witResponses.intents[0];
+        console.log(`intent: ${highestIntent.name} with confidence: ${highestIntent.confidence}`);
+        switch (highestIntent.name) {
+          case "setReleaseVersion":
+            const releaseVersionEntities = witResponse.entities['semanticRelease:semanticRelease'];
+            const selectedReleaseVersion = releaseVersionEntities[0].value;
+            context.octokit.issues.createComment(
+              context.issue({ body: `I should probably set the release version to: ${selectedReleaseVersion}` })
+            );
+            break;
+          default:
+            console.log(`Unrecognised intent: ${highestIntent.name} from wit.ai`);
+            context.octokit.issues.createComment(
+              context.issue({ body: `I don't understand what my hive mind colleages are asking me to do :(
+                Please ask my maintainer to check the logs.` })
+            );
+            break;
+        }
       } catch (witError) {
         context.octokit.issues.createComment(
           context.issue({ body: `Sorry, i'm not feeling too well and cannot responsd.

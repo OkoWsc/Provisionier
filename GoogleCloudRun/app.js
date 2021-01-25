@@ -94,13 +94,13 @@ module.exports = (app) => {
             const selectedReleaseVersion = releaseVersionEntities[0].value;
             switch (selectedReleaseVersion) {
               case "major":
-                newversion = semver.inc(version,"major");
+                newVersion = semver.inc(latestVersion,"major");
                 break;
               case "minor":
-                newversion = semver.inc(version,"minor");
+                newVersion = semver.inc(latestVersion,"minor");
                 break;
               case "patch":
-                newVersion = semver.inc(version,"patch");
+                newVersion = semver.inc(latestVersion,"patch");
                 break;
             }
             context.octokit.issues.createComment(

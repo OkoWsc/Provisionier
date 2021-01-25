@@ -92,7 +92,7 @@ module.exports = (app) => {
           case "setReleaseVersion":
             const existingReleaseBranch = await db.collection("apps")
               .doc(appReleaseInfo.id).collection("releases")
-              .where("issue","==",context.issue.id).get()
+              .where("issue","==",context.payload.issue.id).get()
             if (!existingReleaseBranch.empty) {
               return context.octokit.issues.createComment(
                 context.issue({ body: `Sorry, there's already an open release branch for this release.
@@ -135,7 +135,7 @@ module.exports = (app) => {
               .doc(appReleaseInfo.id)
               .collection("releases")
               .doc().set({
-                issue: context.issue.id,
+                issue: context.payload.issue.id,
                 branch: newBranch,
                 releaseVersion: newVersion,
                 baseCommit: mainSha,

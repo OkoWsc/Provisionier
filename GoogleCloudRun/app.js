@@ -103,8 +103,31 @@ module.exports = (app) => {
                 newVersion = semver.inc(latestVersion,"patch");
                 break;
             }
+            mainRef = await octokit.git.getRef({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              ref:  "heads/main"
+            });
+            mainSha = mainRef.data.object.sha;
+            branchName = `release-${newVersion}`;
+            newBranch = await octokit.git.createRef({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              ref: `refs/heads/${branchName}`,
+              sha: mainSha
+            });
+            console.log(newBranch);
+
+            branchUrl = `/${context.payload.repository.owner.login}/
+              ${context.payload.repository.name}/tree/${branchName}`
+
+
+
             context.octokit.issues.createComment(
-              context.issue({ body: `I should probably set the release version to: ${newVersion} which is a ${selectedReleaseVersion} release` })
+              context.issue({ body: `
+              I created a new branch for version: ${newVersion} [${branchName}](${branchUrl})
+              Give me a minute to update the app.gradle and Info.plist version numbers.
+              ` })
             );
             break;
           default:

@@ -7,6 +7,7 @@ admin.initializeApp();
 var db = admin.firestore();
 const semver = require('semver');
 
+const {Wit} = require('node-wit');
 const witAiClient = new Wit({accessToken: process.env.witAiToken});
 
 
@@ -53,7 +54,7 @@ module.exports = (app) => {
         //@todo actually handle the wit.ai response properly
       } catch (witError) {
         context.octokit.issues.createComment(
-          context.issue({ body: `Whoops, im not feeling too well and cannot response.
+          context.issue({ body: `Sorry, i'm not feeling too well and cannot responsd.
             Please ask my maintainer to check the logs.` })
         );
         throw new Error(witError);

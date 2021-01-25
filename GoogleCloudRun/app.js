@@ -90,6 +90,15 @@ module.exports = (app) => {
 
         switch (highestIntent.name) {
           case "setReleaseVersion":
+            const existingReleaseBranch = await db.collection("apps")
+              .doc(appReleaseInfo.id).collection("releases")
+              .where("issue","==",context.issue.id).get()
+            if (!existingReleaseBranch.empty) {
+              return context.octokit.issues.createComment(
+                context.issue({ body: `Sorry, there's already an open release branch for this release.
+                To change the version number close the issue and open a new one.` })
+              );  
+            }
             const releaseVersionEntities = witResponse.entities['semanticRelease:semanticRelease'];
             const selectedReleaseVersion = releaseVersionEntities[0].value;
             switch (selectedReleaseVersion) {
@@ -103,14 +112,15 @@ module.exports = (app) => {
                 newVersion = semver.inc(latestVersion,"patch");
                 break;
             }
-            mainRef = await octokit.git.getRef({
+            mainRef = await context.octokit.git.getRef({
               owner: context.payload.repository.owner.login,
               repo: context.payload.repository.name,
               ref:  "heads/main"
             });
             mainSha = mainRef.data.object.sha;
             branchName = `release-${newVersion}`;
-            newBranch = await octokit.git.createRef({
+            console.log(`Creating new branch: ${branchName} with commit: ${mainSha} from main branch`)
+            newBranch = await context.octokit.git.createRef({
               owner: context.payload.repository.owner.login,
               repo: context.payload.repository.name,
               ref: `refs/heads/${branchName}`,
@@ -121,11 +131,20 @@ module.exports = (app) => {
             branchUrl = `/${context.payload.repository.owner.login}/
               ${context.payload.repository.name}/tree/${branchName}`
 
+              await db.collection("apps")
+              .doc(appReleaseInfo.id)
+              .collection("releases")
+              .doc().set({
+                issue: context.issue.id,
+                branch: newBranch,
+                releaseVersion: newVersion,
+                baseCommit: mainSha,
+                inProgress: true
+              });
 
 
             context.octokit.issues.createComment(
-              context.issue({ body: `
-              I created a new branch for version: ${newVersion} [${branchName}](${branchUrl})
+              context.issue({ body: `I created a new branch for version: ${newVersion} [${branchName}](${branchUrl})
               Give me a minute to update the app.gradle and Info.plist version numbers.
               ` })
             );

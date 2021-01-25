@@ -40,7 +40,7 @@ module.exports = (app) => {
       return label.name == "release";
     })
     if (!releaseLabel) {
-      console.log("The issue this comment is on is a release issue");
+      console.log("This comment is on a release issue");
       // @todo add wit.ai here
       context.octokit.issues.createComment(
         context.issue({ body: JSON.stringify(context.payload) })

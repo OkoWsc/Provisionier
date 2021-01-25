@@ -128,15 +128,15 @@ module.exports = (app) => {
             });
             console.log(newBranch);
 
-            branchUrl = `/${context.payload.repository.owner.login}/
-              ${context.payload.repository.name}/tree/${branchName}`
+            //This needs to be a single line else it doesn't link properly
+            branchUrl = `/${context.payload.repository.owner.login}/${context.payload.repository.name}/tree/${branchName}`
 
               await db.collection("apps")
               .doc(appReleaseInfo.id)
               .collection("releases")
               .doc().set({
                 issue: context.payload.issue.id,
-                branch: newBranch,
+                branch: branchName,
                 releaseVersion: newVersion,
                 baseCommit: mainSha,
                 inProgress: true

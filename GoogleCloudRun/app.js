@@ -49,7 +49,7 @@ module.exports = (app) => {
         witResponse = await witAiClient.message(context.payload.comment.body, {})
         console.log('Yay, got Wit.ai response: ' + JSON.stringify(witResponse));
         context.octokit.issues.createComment(
-          context.issue({ body: `${witResponse}` })
+          context.issue({ body: `${JSON.stringify(witResponse)}` })
         );
         //@todo actually handle the wit.ai response properly
       } catch (witError) {

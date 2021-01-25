@@ -64,12 +64,47 @@ module.exports = (app) => {
         });
         const highestIntent = witResponse.intents[0];
         console.log(`intent: ${highestIntent.name} with confidence: ${highestIntent.confidence}`);
+
+        const appReleaseInfoDocs = await db.collection("apps")
+        .where("owner","==",context.payload.repository.owner.login)
+        .where("repo","==",context.payload.repository.name)
+        .get();
+      if (appReleaseInfoDocs.empty) {
+        await context.octokit.issues.createComment(
+          context.issue({ body: `I couldn't find a configured app for this repo :(`})
+        );
+
+        return context.octokit.issues.update(
+          context.issue({state:"closed"})
+        )
+      }
+      appReleaseInfo = appReleaseInfoDocs.docs[0].data();
+      appReleaseInfo.id = appReleaseInfoDocs.docs[0].id;
+      androidVersion=appReleaseInfo.androidVersion;
+      iosVersion=appReleaseInfo.iosVersion;
+
+      latestVersion=androidVersion;
+      if (semver.gt(iosVersion,androidVersion)) {
+          latestVersion=iosVersion;
+      }
+
         switch (highestIntent.name) {
           case "setReleaseVersion":
             const releaseVersionEntities = witResponse.entities['semanticRelease:semanticRelease'];
             const selectedReleaseVersion = releaseVersionEntities[0].value;
+            switch (selectedReleaseVersion) {
+              case "major":
+                newversion = semver.inc(version,"major");
+                break;
+              case "minor":
+                newversion = semver.inc(version,"minor");
+                break;
+              case "patch":
+                newVersion = semver.inc(version,"patch");
+                break;
+            }
             context.octokit.issues.createComment(
-              context.issue({ body: `I should probably set the release version to: ${selectedReleaseVersion}` })
+              context.issue({ body: `I should probably set the release version to: ${newVersion} which is a ${selectedReleaseVersion} release` })
             );
             break;
           default:
@@ -126,11 +161,11 @@ module.exports = (app) => {
 
       latestVersion=androidVersion;
       if (semver.gt(iosVersion,androidVersion)) {
-          version=iosVersion;
+          latestVersion=iosVersion;
       }
-      nextMajorVersion = semver.inc(version,"major");
-      nextMinorVersion = semver.inc(version,"minor");
-      nextPatchVersion = semver.inc(version,"patch");
+      nextMajorVersion = semver.inc(latestVersion,"major");
+      nextMinorVersion = semver.inc(latestVersion,"minor");
+      nextPatchVersion = semver.inc(latestVersion,"patch");
 
       return context.octokit.issues.createComment(
         context.issue({ body: `Hi @${context.payload.issue.user.login}

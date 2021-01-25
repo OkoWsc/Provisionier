@@ -36,7 +36,7 @@ module.exports = (app) => {
       return console.log("Commenting user not got permission");
     }
 
-    const releaseLabel = context.payload.labels.filter(function(label) {
+    const releaseLabel = context.payload.issue.labels.filter(function(label) {
       return label.name == "release";
     })
     if (!releaseLabel) {

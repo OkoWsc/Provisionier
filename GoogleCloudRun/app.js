@@ -35,14 +35,19 @@ module.exports = (app) => {
     if (!await permissionCheck(context)) {
       return console.log("Commenting user not got permission");
     }
-
+    data = {
+      owner: context.payload.repository.owner.login,
+      repo: context.payload.repository.name,
+      issue_number: context.payload.issue.id
+    }
+    console.log(data);
     const issue = await context.octokit.issues.get({
       owner: context.payload.repository.owner.login,
       repo: context.payload.repository.name,
-      issue_number:context.payload.issue.id
+      issue_number: context.payload.issue.id
     });
     console.log(issue);
-    
+
     const releaseLabel = issue.data.issue.labels.filter(function(label) {
       return label.name == "release";
     })

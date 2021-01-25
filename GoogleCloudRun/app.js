@@ -30,13 +30,20 @@ module.exports = (app) => {
 
   app.on("issue_comment.created", async (context) => {
     console.log("New comment received");
-    console.log(JSON.stringify(context.payload));
+    console.log(context.payload);
 
     if (!await permissionCheck(context)) {
       return console.log("Commenting user not got permission");
     }
 
-    const releaseLabel = context.payload.issue.labels.filter(function(label) {
+    const issue = await context.octokit.issues.get({
+      owner: context.payload.repository.owner.login,
+      repo: context.payload.repository.name,
+      issue_number:context.payload.issue.id
+    });
+    console.log(issue);
+    
+    const releaseLabel = issue.data.issue.labels.filter(function(label) {
       return label.name == "release";
     })
     if (!releaseLabel) {

@@ -48,7 +48,14 @@ module.exports = (app) => {
       try {
         witResponse = await witAiClient.message(context.payload.comment.body, {})
         console.log('Yay, got Wit.ai response: ' + JSON.stringify(witResponse));
-
+      } catch (witError) {
+        context.octokit.issues.createComment(
+          context.issue({ body: `Sorry, i'm not feeling too well and cannot responsd.
+            Please ask my maintainer to check the logs.` })
+        );
+        console.log("Got error from Wit.ai: ${witError}")
+        throw new Error(witError);
+      }
 
         witResponse.intents.sort(function(a, b) {
           if (a.confidence < b.confidence) return 1;
@@ -73,13 +80,6 @@ module.exports = (app) => {
             );
             break;
         }
-      } catch (witError) {
-        context.octokit.issues.createComment(
-          context.issue({ body: `Sorry, i'm not feeling too well and cannot responsd.
-            Please ask my maintainer to check the logs.` })
-        );
-        throw new Error(witError);
-      }
     } else {
       console.log("Not a release issue, nothing for me to do!");
     }

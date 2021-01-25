@@ -62,7 +62,7 @@ module.exports = (app) => {
           if (a.confidence > b.confidence) return -1;
           return 0;
         });
-        const highestIntent = witResponses.intents[0];
+        const highestIntent = witResponse.intents[0];
         console.log(`intent: ${highestIntent.name} with confidence: ${highestIntent.confidence}`);
         switch (highestIntent.name) {
           case "setReleaseVersion":

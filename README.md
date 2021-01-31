@@ -1,2 +1,2 @@
 # Provisionier
-Hands free iOS provisioning
+Mobile app deployment automation

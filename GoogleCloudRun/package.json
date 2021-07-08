@@ -13,7 +13,7 @@
     "firebase-admin": "^9.4.2",
     "node-wit": "^6.0.0",
     "probot": "^11.0.5",
-    "semver": "^7.3.4"
+    "semver": "^7.3.5"
   },
   "devDependencies": {
     "nock": "^13.0.6",

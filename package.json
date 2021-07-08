@@ -9,9 +9,9 @@
   "author": "Gregory Oakley-Stevenson <gregory@okonetwork.org.uk>",
   "license": "ISC",
   "dependencies": {
-    "@octokit/rest": "^18.5.6",
+    "@octokit/rest": "^18.6.0",
     "appstoreconnect": "^0.2.1",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "request-promise": "^4.2.6"
   }
 }
